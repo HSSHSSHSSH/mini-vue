@@ -40,7 +40,7 @@ import { extend } from "../shared";
 //引入oop
 let activeEffect;
 const targetMap = new Map()
-class ReactiveEffect {
+export class ReactiveEffect {
  private _fn: any;
  scheduler: Function | undefined
  onStop?:  () => void
@@ -76,6 +76,24 @@ function cleanupEffect(effect) {
     })
 }
 
+export function trackEffects(deps) {
+    if(!(activeEffect && activeEffect.active)) return  //改版 stop后需手动resume唤醒trigger
+  
+    deps.add(activeEffect)
+    
+    activeEffect.depsEffect.add(deps)
+}
+
+export function triggerEffects(deps) {
+    deps.forEach(f => {
+        if(f.scheduler){
+            f.scheduler()
+        }else {
+            f.run()
+        }
+    })
+}
+
 
 function track(target,key){
   if(!activeEffect) return
@@ -87,25 +105,16 @@ function track(target,key){
   if(!deps) {
       depsMap.set(key,deps = new Set())
   }
-
-//   if(!activeEffect) return //原版 stop后再次track会唤醒trigger
-  if(!(activeEffect && activeEffect.active)) return  //改版 stop后需手动resume唤醒trigger
+  trackEffects(deps)
   
-  deps.add(activeEffect)
-  
-  activeEffect.depsEffect.add(deps)
 }
+
+
 
 function trigger(target,key){
     let depsMap = targetMap.get(target)
     let deps = depsMap.get(key)
-    deps.forEach(f => {
-        if(f.scheduler){
-            f.scheduler()
-        }else {
-            f.run()
-        }
-    })
+    triggerEffects(deps)
 }
 
 function effect(fn,options:any = {}) {
