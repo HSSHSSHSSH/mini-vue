@@ -1,6 +1,6 @@
 
 const publicPropertiesMap = {
-    $el: (i) =>  i.vnode.instance
+    $el: (i) =>  i.vnode.el
 } 
 
 
@@ -12,8 +12,9 @@ export const publicInstanceHandlers = {
         }
         
        const publicGetter = publicPropertiesMap[key]
+       
        if(publicGetter) {
-           return publicGetter()
+           return publicGetter(instance)
        }
     }
 }

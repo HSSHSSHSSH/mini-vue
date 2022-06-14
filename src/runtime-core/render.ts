@@ -9,15 +9,18 @@ export function render(vnode,container) {
 }
 
 export function patch(vnode: any, container: any) {
+    
    //element类型用于渲染
    //instance类型储存着element与其他数据
     const {shapeFlags} = vnode
-    if(shapeFlags === ShapeFlags.ELEMENT){
-
+    
+    if((shapeFlags & ShapeFlags.ELEMENT) === ShapeFlags.ELEMENT){
+      
         //vnode 是 element类型
+        
         processElement(vnode,container)
         
-    } else if(shapeFlags === ShapeFlags.STATEFUL_COMPONENT) {
+    } else if((shapeFlags & ShapeFlags.STATEFUL_COMPONENT) === ShapeFlags.STATEFUL_COMPONENT) {
         
         //vnode 是 component类型
         processComponent(vnode,container)
@@ -27,6 +30,7 @@ export function patch(vnode: any, container: any) {
 
 function setAttributes(el,props){
   for (const key in props) {
+    
       const val = props[key]
       el.setAttribute(key,val)
   }
@@ -63,7 +67,8 @@ function setupRenderEffect(instance: any, initinalVode, container: any) {
     var subTree = instance.render.call(proxy) //element
     
     patch(subTree,container)
-    instance.vnode.el = subTree.el
+    initinalVode.el = subTree.el
+    
 }
 
 function processElement(vnode: any, container: any) {
@@ -72,7 +77,6 @@ function processElement(vnode: any, container: any) {
 
 function mountElement(vnode: any, container: any) {
     const el = vnode.el = document.createElement(vnode.type)
-        console.log('vnode.el',vnode);
         
         const {props,children,shapeFlags} = vnode
         setAttributes(el,props)

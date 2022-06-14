@@ -14,7 +14,6 @@ export function createVNode(type,props?,children?){
    } else if(Array.isArray(children)) {
        vnode.shapeFlags = vnode.shapeFlags | ShapeFlags.ARRAY_CHILDREN
    }
-   debugger
    return vnode
 }
 
