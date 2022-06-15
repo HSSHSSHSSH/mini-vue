@@ -1,17 +1,23 @@
 import { publicInstanceHandlers } from "./componentPublicInstance"
 import { patch } from "./render"
 
-export function createComponentInstance(vnode: any) {
+export function 
+createComponentInstance(vnode: any) {
     const instance = {
         vnode,
-        type: vnode.type
+        type: vnode.type,
+        setupState: {},
+        props: {}
     }
     
     return instance
 }
 
 export function setupComponent(instance) {
-    //todo  initProps initSlots
+    //todo  
+    // initProps
+
+    // initSlots
 
     //initSetup
     

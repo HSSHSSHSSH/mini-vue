@@ -5,7 +5,12 @@ export const App = {
         window.self = this
         return h(
         'div',
-        {class:'red'},
+        {
+            class:'red',
+            onClick() {
+                console.log('点击事件触发');
+            }
+        },
         [
             h('div',{class:'red'},this.name),
             h('div',{class:'red'},this.age),

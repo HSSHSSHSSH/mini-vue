@@ -29,10 +29,18 @@ export function patch(vnode: any, container: any) {
 }
 
 function setAttributes(el,props){
+  const isOn = (key: string) => /^on[A-Z]/.test(key)
   for (const key in props) {
     
       const val = props[key]
-      el.setAttribute(key,val)
+      
+      if(isOn(key)) {  //注册事件
+        const event = key.slice(2).toLowerCase()
+        el.addEventListener(event,val) 
+      } else {  //注册属性
+          el.setAttribute(key,val)
+      }
+      
   }
 }
 
