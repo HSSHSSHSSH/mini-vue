@@ -36,7 +36,14 @@ function setupStatefulInstance(instance: any) {
 function handleSetupResult(instance,setupResult: any) {
     if(typeof setupResult === 'object') {
       instance.setupState = setupResult
-      instance.proxy = new Proxy({_:instance},publicInstanceHandlers)
+      instance.proxy = new Proxy({_:instance},publicInstanceHandlers)  
+      /**
+       * question
+       * 1.why proxy
+       * 2.what & why {_:instance}   why not new Proxy(setupResult: {...})
+       * answer
+       * this访问的不止setupResult中的属性
+       */
     }
     finishComponentSetup(instance,setupResult)
 }

@@ -6,6 +6,8 @@ const publicPropertiesMap = {
 
 export const publicInstanceHandlers = {
     get({_:instance},key) {
+        console.log(instance)
+        
         const {setupState} = instance
         if(key in setupState) {
             return setupState[key]
