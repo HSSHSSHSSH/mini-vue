@@ -1,5 +1,6 @@
 import {track, trigger} from './effect'
 import {mutableHandler,readonlyHandler, shallowReadonlyHandler} from './baseHandlers'
+import { isObject } from '../shared/index'
 
 export const enum ReactiveFlags {
     IS_REACTIVE = "__v_isReactive",
@@ -7,6 +8,7 @@ export const enum ReactiveFlags {
 }
 
 function createActiveObject(raw:any,baseHandlers){
+    if(!isObject(raw)) return
     return new Proxy(raw, baseHandlers)
 }
 

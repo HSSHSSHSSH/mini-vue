@@ -1,4 +1,5 @@
 import { h } from '../../lib/guide-mini-vue.esm.js'
+import {Foo} from './Foo.js'
 window.self = null
 export const App = {
     render(){
@@ -7,13 +8,12 @@ export const App = {
         'div',
         {
             class:'red',
-            onClick() {
-                console.log('点击事件触发');
-            }
+            
         },
         [
             h('div',{class:'red'},this.name),
             h('div',{class:'red'},this.age),
+            h(Foo,{count:1})
         ]
         )
     },

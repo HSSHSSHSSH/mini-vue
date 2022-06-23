@@ -1,6 +1,7 @@
 import { isObject } from "../shared/index"
 import { ShapeFlags } from "../shared/shapeFlags"
 import { createComponentInstance, setupComponent } from "./component"
+import { Fragment,Text } from "./vnode"
 
 export function render(vnode,container) {
     
@@ -12,18 +13,27 @@ export function patch(vnode: any, container: any) {
     
    //element类型用于渲染
    //instance类型储存着element与其他数据
-    const {shapeFlags} = vnode
-    
-    if((shapeFlags & ShapeFlags.ELEMENT) === ShapeFlags.ELEMENT){
-      
-        //vnode 是 element类型
-        
-        processElement(vnode,container)
-        
-    } else if((shapeFlags & ShapeFlags.STATEFUL_COMPONENT) === ShapeFlags.STATEFUL_COMPONENT) {
-        
-        //vnode 是 component类型
-        processComponent(vnode,container)
+    const {shapeFlags,type} = vnode
+    switch(type) {
+        case Fragment:
+            processFragment(vnode,container)
+        break;
+        case Text:
+            processText(vnode,container)
+        break;
+        default:
+        if((shapeFlags & ShapeFlags.ELEMENT) === ShapeFlags.ELEMENT){
+            
+            //vnode 是 element类型
+            
+            processElement(vnode,container)
+            
+        } else if((shapeFlags & ShapeFlags.STATEFUL_COMPONENT) === ShapeFlags.STATEFUL_COMPONENT) {
+            
+            //vnode 是 component类型
+            processComponent(vnode,container)
+        }
+        break;
     }
 
 }
@@ -45,6 +55,7 @@ function setAttributes(el,props){
 }
 
 function mountChildren(children,container){
+    
     children.forEach(el => {
         patch(el,container)
     });
@@ -94,5 +105,17 @@ function mountElement(vnode: any, container: any) {
             el.textContent = children
         }
         container.append(el)
+}
+
+function processFragment(vnode: any, container: any) {
+    const {children} = vnode
+    mountChildren(vnode,container)
+}
+
+function processText(vnode: any, container: any) {
+    
+    const {children} = vnode
+    const textNode = vnode.el = document.createTextNode(children)
+    container.append(textNode)
 }
 

@@ -1,4 +1,4 @@
-import { h } from "../../lib/guide-mini-vue.esm";
+import { h } from "../../lib/guide-mini-vue.esm.js";
 /**
  * props满足：
  * 1.可传入
@@ -8,13 +8,18 @@ import { h } from "../../lib/guide-mini-vue.esm";
 export const Foo = {
     setup(props) {
         console.log('props in foo',props);
+        return props
     },
 
     render() {
         return h(
             'div',
-            {},
-            "foo" + this.propsa
+            {
+                onClick() {
+                    console.log('点击事件触发');
+                }
+            },
+            "foo: " + this.count
         )
     }
 }

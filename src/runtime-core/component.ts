@@ -1,24 +1,29 @@
+import { shallowReadonly } from "../reactivity/reactive"
+import { emit } from "./componentEmit"
+import { initProps } from "./componentProps"
 import { publicInstanceHandlers } from "./componentPublicInstance"
+import { initSlots } from "./componentSlots"
 import { patch } from "./render"
-
-export function 
-createComponentInstance(vnode: any) {
+let currentInstance = null
+export function createComponentInstance(vnode: any) {
     const instance = {
         vnode,
         type: vnode.type,
         setupState: {},
-        props: {}
+        props: {},
+        slots: {},
+        emit: () => {}
     }
-    
+     instance.emit = emit.bind(null,instance) as any
     return instance
 }
 
 export function setupComponent(instance) {
-    //todo  
+    
     // initProps
-
+    initProps(instance,instance.vnode.props)
     // initSlots
-
+    initSlots(instance,instance.vnode.children)
     //initSetup
     
     setupStatefulInstance(instance)
@@ -28,7 +33,11 @@ function setupStatefulInstance(instance: any) {
     const component = instance.type
     const {setup} = component
     if(setup) {
-        const setupResult = setup()
+        setCurrentInstance(instance)
+        const setupResult = setup(shallowReadonly(instance.props),{
+            emit: instance.emit
+        })  //setup传参问题 有的传有的不传统一写成传的  answer不传的就是undefined
+        setCurrentInstance(null)
         handleSetupResult(instance,setupResult)
     }
 }
@@ -52,6 +61,14 @@ function finishComponentSetup(instance: any, setupResult: any) {
     const component = instance.type
      
     instance.render = component.render
+}
+
+export function setCurrentInstance(instance) {
+    currentInstance = instance
+}
+
+export function getCurrentInstance() {
+    return currentInstance
 }
 
 
